@@ -44,6 +44,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send" />
+
+        <Button
+            android:id="@+id/button_client"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/client" />
+
+        <Button
+            android:id="@+id/button_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/server" />
     </LinearLayout>
 
 </LinearLayout>
