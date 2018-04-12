@@ -209,25 +209,4 @@ public class CompanionManager {
             state.onSuccess();
         }
     }
-
-    /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
-     */
-    public void sendMessage(byte[] message, MessageState state) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            state.onError("Companion not connected!");
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            mChatService.write(message);
-
-            state.onSuccess();
-        }
-    }
 }

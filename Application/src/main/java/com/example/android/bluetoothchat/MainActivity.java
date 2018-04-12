@@ -17,7 +17,12 @@
 
 package com.example.android.bluetoothchat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +44,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter;
 public class MainActivity extends SampleActivityBase {
 
     public static final String TAG = "MainActivity";
+    private static final int REQUEST_CODE_LOCATION = 1201;
 
     // Whether the Log Fragment is currently shown
     private boolean mLogShown;
@@ -53,6 +59,44 @@ public class MainActivity extends SampleActivityBase {
             BluetoothChatFragment fragment = new BluetoothChatFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO this is needed only for Client
+        askLocationPermissions(new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        });
+    }
+
+    private void askLocationPermissions(String[] strings) {
+        boolean permissionGranted = true;
+        for (String permission : strings) {
+            permissionGranted &= ActivityCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED;
+        }
+
+        if (permissionGranted) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(strings, REQUEST_CODE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            for (int result : grantResults) {
+                if (result == PackageManager.PERMISSION_DENIED) {
+                    return;
+                }
+            }
+
         }
     }
 

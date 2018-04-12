@@ -13,6 +13,7 @@ import com.example.android.companion.MessageState;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,6 +32,7 @@ public class LocationServer {
     private final Timer timer;
     private final LocationManager locationManager;
     private final FusedLocationProviderClient fusedLocationProviderClient;
+    private final Task<Location> locationSetter;
 
     private volatile Location currentLocation;
     private LocationListener locationListener = getLocationListener();
@@ -42,6 +44,7 @@ public class LocationServer {
         this.companionManager = companionManager;
         this.locationManager = locationManager;
         this.fusedLocationProviderClient = fusedLocationProviderClient;
+        locationSetter = fusedLocationProviderClient.getLastLocation();
         setLastLocationListener();
 //        currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         timer = new Timer();
@@ -62,7 +65,7 @@ public class LocationServer {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        android.util.Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                        android.util.Log.d(TAG, "Error trying to get last GPS location");
                         e.printStackTrace();
                     }
                 });
@@ -94,7 +97,7 @@ public class LocationServer {
             Log.e(TAG, "Location is null, not sending to companion");
             return;
         }
-        companionManager.sendMessage(LocationParserUtil.getLocationBytes(location), new MessageState() {
+        companionManager.sendMessage(LocationParserUtil.getStringFromLocation(location), new MessageState() {
             @Override
             public void onSuccess() {
                 // Report to interested

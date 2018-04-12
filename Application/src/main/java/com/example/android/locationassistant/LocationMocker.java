@@ -3,6 +3,7 @@ package com.example.android.locationassistant;
 
 import android.content.Intent;
 import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
@@ -62,8 +63,14 @@ public class LocationMocker {
             if (locationManager == null) {
                 return;
             }
+            Location location = LocationParserUtil.getLocationFromString(incomingMessage);
+
+            if (location == null) {
+                return;
+            }
+
             locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER,
-                    LocationParserUtil.getLocationFromString(incomingMessage));
+                    location);
         }
 
         @Override
